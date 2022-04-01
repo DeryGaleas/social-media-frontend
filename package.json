@@ -27,12 +27,6 @@
     "eject": "node_modules/.bin/react-scripts eject",
     "generate": "graphql-codegen --config codegen.yml"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -47,10 +41,15 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "2.6.2",
-    "@graphql-codegen/urql-introspection": "2.1.1",
+    "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/typescript": "2.4.8",
     "@graphql-codegen/typescript-operations": "2.3.5",
     "@graphql-codegen/typescript-react-apollo": "3.2.11",
-    "@graphql-codegen/typescript": "2.4.8",
-    "@graphql-codegen/introspection": "2.1.1"
+    "@graphql-codegen/urql-introspection": "2.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "2.6.1"
   }
 }
