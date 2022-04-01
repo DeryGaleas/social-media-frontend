@@ -1,10 +1,10 @@
 import React from "react";
-import { Button } from "antd";
 import "./App.css";
+import Login from "./pages/Login/";
 
 const App = () => (
-  <div className="App">
-    <Button type="primary">Button</Button>
+  <div className="App" style={{ height: "100%" }}>
+    <Login />
   </div>
 );
 
