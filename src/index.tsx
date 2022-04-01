@@ -1,10 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import App from './App';
+import {Provider} from "urql";
+import client from "./grapqlClient";
 
-ReactDOM.render(
+import * as ReactDOMClient from 'react-dom/client';
+
+const root = ReactDOMClient.createRoot(document.getElementById('root') as HTMLElement)
+
+
+root.render(
   <React.StrictMode>
-    <App/>
+    <Provider value={client}>
+      <App/>
+    </Provider>
   </React.StrictMode>,
-  document.getElementById('root')
 );
