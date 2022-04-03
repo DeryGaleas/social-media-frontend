@@ -1,63 +1,73 @@
-import { Button, Card, Col, Form, Input, Row } from "antd";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { grey } from "@ant-design/colors";
+import CardOnCenter from "./components/CardOnCenter";
+import LoginForm from "./components/LoginForm";
+import styled from "styled-components";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import LoginCircles from "./assets/LoginCircles.svg";
+import { Layout, Row } from "antd";
+import LoginHeader from "./components/LoginHeader";
+import { blue } from "@ant-design/colors";
+
+const { Header, Content, Footer } = Layout;
 
 const Login = () => {
   return (
-    <Row style={{ height: "100%" }} align={"middle"}>
-      <Col span={10} offset={8}>
-        <Card
-          title="Login"
-          headStyle={{ textAlign: "center", fontSize: "1.5em" }}
-          style={{ width: "500px" }}
-        >
-          <Form layout={"vertical"}>
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[
-                { required: true, message: "Please input your username!" },
-              ]}
-            >
-              <Input prefix={<UserOutlined />} />
-            </Form.Item>
-
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-              ]}
-            >
-              <Input.Password prefix={<LockOutlined />} />
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ width: "100%" }}
-              >
-                Log in
-              </Button>
-
-              <a
-                style={{
-                  color: grey[3],
-                  display: "block",
-                  marginTop: "5px",
-                  textAlign: "center",
-                }}
-                href={""}
-              >
-                No Account? Create One
-              </a>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Col>
-    </Row>
+    <Background>
+      <TransparentLayout>
+        <TransparentHeader>
+          <LoginHeader />
+        </TransparentHeader>
+        <Content>
+          <AllHeightRow align={"middle"}>
+            <CardOnCenter title={"Login"}>
+              <LoginForm />
+            </CardOnCenter>
+          </AllHeightRow>
+        </Content>
+        <TransparentFooter>
+          <StatsCircle />
+        </TransparentFooter>
+      </TransparentLayout>
+    </Background>
   );
 };
+
+const Background = styled.div`
+  height: 100%;
+  background-image: url(${LoginCircles});
+  background-size: cover;
+  position: relative;
+`;
+
+const TransparentLayout = styled(Layout)`
+  background: transparent;
+  height: 100%;
+`;
+
+const AllHeightRow = styled(Row)`
+  height: 100%;
+`;
+
+const TransparentHeader = styled(Header)`
+  background-color: transparent;
+`;
+
+const TransparentFooter = styled(Footer)`
+  display: flex;
+  background-color: transparent;
+  padding: 0;
+`;
+
+const StatsCircle = styled.div`
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  background-color: ${blue[5]};
+
+  padding: 15em;
+
+  clip-path: circle(85% at 90% 100%);
+`;
 
 export default Login;

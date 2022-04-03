@@ -215,11 +215,26 @@ export type UserTypeFriendsArgs = {
   filters?: InputMaybe<UserFilter>;
 };
 
-export type IsLoggedInQueryVariables = Exact<{ [key: string]: never }>;
+export type LoginMutationVariables = Exact<{
+  username: Scalars["String"];
+  password: Scalars["String"];
+}>;
 
-export type IsLoggedInQuery = { __typename?: "Query"; isLoggedIn: boolean };
+export type LoginMutation = {
+  __typename?: "Mutation";
+  login: {
+    __typename?: "UserType";
+    id: string;
+    email: string;
+    username: string;
+    isActive: boolean;
+    firstName: string;
+    lastName: string;
+  };
+};
 
 import { IntrospectionQuery } from "graphql";
+
 export default {
   __schema: {
     queryType: {

@@ -1,11 +1,16 @@
 import React from "react";
 import "./App.css";
 import Login from "./pages/Login/";
+import styled from "styled-components";
 
 const App = () => (
-  <div className="App" style={{ height: "100%" }}>
+  <AppCanvas>
     <Login />
-  </div>
+  </AppCanvas>
 );
+
+const AppCanvas = styled.div`
+  height: 100%;
+`;
 
 export default App;
