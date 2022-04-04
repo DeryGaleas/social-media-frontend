@@ -11,13 +11,13 @@ import { useEffect, useState } from "react";
 
 const LOGIN_USER = gql`
   mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      id
-      email
-      username
-      isActive
-      firstName
-      lastName
+    tokenAuth(username: $username, password: $password) {
+      token
+      refreshToken
+      refreshExpiresIn
+      payload {
+        username
+      }
     }
   }
 `;
@@ -43,7 +43,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (mutationData) {
-      console.log(mutationData);
+      localStorage.setItem("token", mutationData.tokenAuth.token);
     } else if (mutationError) {
       setShowAlert(true);
     }

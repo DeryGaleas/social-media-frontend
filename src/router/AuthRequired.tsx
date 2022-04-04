@@ -10,19 +10,21 @@ const IS_LOGGED_IN = gql`
 `;
 
 const AuthRequired = ({
-                        children,
-                      }: {
+  children,
+}: {
   children: ReactElement[] | ReactElement;
 }) => {
-  const [result] = useQuery<IsLoggedInQuery>({query: IS_LOGGED_IN});
   const nav = useNavigate();
+
+  const [result] = useQuery<IsLoggedInQuery>({
+    query: IS_LOGGED_IN,
+  });
 
   useEffect(() => {
     if (!result.data?.isLoggedIn) {
-      nav("/login", {replace: true});
+      nav("/login", { replace: true });
     }
-  }, [result])
-
+  }, [result, nav]);
 
   return <>{children}</>;
 };

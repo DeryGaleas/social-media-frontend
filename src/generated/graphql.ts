@@ -52,6 +52,11 @@ export type DatetimeFilterLookup = {
   startsWith?: InputMaybe<Scalars['DateTime']>;
 };
 
+export type DeleteType = {
+  __typename?: 'DeleteType';
+  deleted: Scalars['Boolean'];
+};
+
 export type DeleteUserInput = {
   password: Scalars['String'];
 };
@@ -81,12 +86,14 @@ export type Mutation = {
   createMessage: MessagesType;
   createUser: UserType;
   deleteMyUser: Scalars['Boolean'];
-  login: UserType;
-  logout: Scalars['Boolean'];
+  deleteTokenCookie: DeleteType;
+  refreshToken: TokenDataType;
   rejectFriendRequest: Scalars['Boolean'];
   removeFriends: Scalars['Boolean'];
   sendFriendRequest: Scalars['Boolean'];
+  tokenAuth: TokenDataType;
   updateUser: UserType;
+  verifyToken: PayloadType;
 };
 
 
@@ -110,9 +117,8 @@ export type MutationDeleteMyUserArgs = {
 };
 
 
-export type MutationLoginArgs = {
-  password: Scalars['String'];
-  username: Scalars['String'];
+export type MutationRefreshTokenArgs = {
+  token?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -131,8 +137,25 @@ export type MutationSendFriendRequestArgs = {
 };
 
 
+export type MutationTokenAuthArgs = {
+  password: Scalars['String'];
+  token?: InputMaybe<Scalars['String']>;
+  username: Scalars['String'];
+};
+
+
 export type MutationUpdateUserArgs = {
   data: UpdateUserInput;
+};
+
+
+export type MutationVerifyTokenArgs = {
+  token: Scalars['String'];
+};
+
+export type PayloadType = {
+  __typename?: 'PayloadType';
+  payload: TokenPayloadType;
 };
 
 export type Query = {
@@ -185,6 +208,21 @@ export type Subscription = {
   myMessages: MessagesType;
 };
 
+export type TokenDataType = {
+  __typename?: 'TokenDataType';
+  payload: TokenPayloadType;
+  refreshExpiresIn: Scalars['Int'];
+  refreshToken: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type TokenPayloadType = {
+  __typename?: 'TokenPayloadType';
+  exp: Scalars['Int'];
+  origIat: Scalars['Int'];
+  username: Scalars['String'];
+};
+
 export type UpdateUserInput = {
   firstName?: InputMaybe<Scalars['String']>;
   lastName?: InputMaybe<Scalars['String']>;
@@ -226,7 +264,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserType', id: string, email: string, username: string, isActive: boolean, firstName: string, lastName: string } };
+export type LoginMutation = { __typename?: 'Mutation', tokenAuth: { __typename?: 'TokenDataType', token: string, refreshToken: string, refreshExpiresIn: number, payload: { __typename?: 'TokenPayloadType', username: string } } };
 
 export type IsLoggedInQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -246,6 +284,24 @@ export default {
       "name": "Subscription"
     },
     "types": [
+      {
+        "kind": "OBJECT",
+        "name": "DeleteType",
+        "fields": [
+          {
+            "name": "deleted",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
       {
         "kind": "OBJECT",
         "name": "FriendRequestType",
@@ -479,48 +535,36 @@ export default {
             ]
           },
           {
-            "name": "login",
+            "name": "deleteTokenCookie",
             "type": {
               "kind": "NON_NULL",
               "ofType": {
                 "kind": "OBJECT",
-                "name": "UserType",
+                "name": "DeleteType",
+                "ofType": null
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "refreshToken",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TokenDataType",
                 "ofType": null
               }
             },
             "args": [
               {
-                "name": "password",
+                "name": "token",
                 "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
-                }
-              },
-              {
-                "name": "username",
-                "type": {
-                  "kind": "NON_NULL",
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "Any"
-                  }
+                  "kind": "SCALAR",
+                  "name": "Any"
                 }
               }
             ]
-          },
-          {
-            "name": "logout",
-            "type": {
-              "kind": "NON_NULL",
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Any"
-              }
-            },
-            "args": []
           },
           {
             "name": "rejectFriendRequest",
@@ -589,6 +633,46 @@ export default {
             ]
           },
           {
+            "name": "tokenAuth",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TokenDataType",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "password",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              },
+              {
+                "name": "token",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Any"
+                }
+              },
+              {
+                "name": "username",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          },
+          {
             "name": "updateUser",
             "type": {
               "kind": "NON_NULL",
@@ -610,6 +694,48 @@ export default {
                 }
               }
             ]
+          },
+          {
+            "name": "verifyToken",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "PayloadType",
+                "ofType": null
+              }
+            },
+            "args": [
+              {
+                "name": "token",
+                "type": {
+                  "kind": "NON_NULL",
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Any"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "PayloadType",
+        "fields": [
+          {
+            "name": "payload",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TokenPayloadType",
+                "ofType": null
+              }
+            },
+            "args": []
           }
         ],
         "interfaces": []
@@ -700,6 +826,98 @@ export default {
                 "kind": "OBJECT",
                 "name": "MessagesType",
                 "ofType": null
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "TokenDataType",
+        "fields": [
+          {
+            "name": "payload",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "TokenPayloadType",
+                "ofType": null
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "refreshExpiresIn",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "refreshToken",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "token",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          }
+        ],
+        "interfaces": []
+      },
+      {
+        "kind": "OBJECT",
+        "name": "TokenPayloadType",
+        "fields": [
+          {
+            "name": "exp",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "origIat",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
+              }
+            },
+            "args": []
+          },
+          {
+            "name": "username",
+            "type": {
+              "kind": "NON_NULL",
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Any"
               }
             },
             "args": []

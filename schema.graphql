@@ -1,154 +1,177 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
 schema {
-  query: Query
-  mutation: Mutation
-  subscription: Subscription
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
+type DeleteType {
+    deleted: Boolean!
 }
 
 type FriendRequestType {
-  createdAt: DateTime!
-  id: ID!
-  sender: UserType!
-  status: String!
+    createdAt: DateTime!
+    id: ID!
+    sender: UserType!
+    status: String!
 }
 
 type MessagesType {
-  content: String!
-  creationDate: DateTime!
-  id: ID!
-  received: Boolean!
-  receiver: UserType!
-  seen: Boolean!
-  sender: UserType!
+    content: String!
+    creationDate: DateTime!
+    id: ID!
+    received: Boolean!
+    receiver: UserType!
+    seen: Boolean!
+    sender: UserType!
 }
 
 type Mutation {
-  acceptFriendRequest(data: AcceptFriendRequestInput!): Boolean!
-  createMessage(data: CreateMessageInput!): MessagesType!
-  createUser(data: CreateUserInput!): UserType!
-  deleteMyUser(data: DeleteUserInput!): Boolean!
-  login(password: String!, username: String!): UserType!
-  logout: Boolean!
-  rejectFriendRequest(data: RejectFriendRequestInput!): Boolean!
-  removeFriends(data: RemoveFriendsInput!): Boolean!
-  sendFriendRequest(data: SendFriendRequestInput!): Boolean!
-  updateUser(data: UpdateUserInput!): UserType!
+    acceptFriendRequest(data: AcceptFriendRequestInput!): Boolean!
+    createMessage(data: CreateMessageInput!): MessagesType!
+    createUser(data: CreateUserInput!): UserType!
+    deleteMyUser(data: DeleteUserInput!): Boolean!
+    deleteTokenCookie: DeleteType!
+    refreshToken(token: String): TokenDataType!
+    rejectFriendRequest(data: RejectFriendRequestInput!): Boolean!
+    removeFriends(data: RemoveFriendsInput!): Boolean!
+    sendFriendRequest(data: SendFriendRequestInput!): Boolean!
+    tokenAuth(password: String!, token: String, username: String!): TokenDataType!
+    updateUser(data: UpdateUserInput!): UserType!
+    verifyToken(token: String!): PayloadType!
+}
+
+type PayloadType {
+    payload: TokenPayloadType!
 }
 
 type Query {
-  isLoggedIn: Boolean!
-  me: UserType!
-  pendingFriendRequest: [FriendRequestType!]!
-  users(filters: UserFilter): [UserType!]!
+    isLoggedIn: Boolean!
+    me: UserType!
+    pendingFriendRequest: [FriendRequestType!]!
+    users(filters: UserFilter): [UserType!]!
 }
 
 type Subscription {
-  myMessages: MessagesType!
+    myMessages: MessagesType!
+}
+
+type TokenDataType {
+    payload: TokenPayloadType!
+    refreshExpiresIn: Int!
+    refreshToken: String!
+    token: String!
+}
+
+type TokenPayloadType {
+    exp: Int!
+    origIat: Int!
+    username: String!
 }
 
 type UserType {
-  email: String!
-  firstName: String!
-  friends(filters: UserFilter): [UserType!]!
-  id: ID!
-  "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-  isActive: Boolean!
-  lastLogin: DateTime
-  lastName: String!
-  "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-  username: String!
+    email: String!
+    firstName: String!
+    friends(filters: UserFilter): [UserType!]!
+    id: ID!
+    "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
+    isActive: Boolean!
+    lastLogin: DateTime
+    lastName: String!
+    "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+    username: String!
 }
 
 "Date with time (isoformat)"
 scalar DateTime
 
 input AcceptFriendRequestInput {
-  requestId: ID!
+    requestId: ID!
 }
 
 input CreateMessageInput {
-  content: String!
-  receiver: ID!
+    content: String!
+    receiver: ID!
 }
 
 input CreateUserInput {
-  email: String!
-  firstName: String!
-  lastName: String!
-  password: String!
-  "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-  username: String!
+    email: String!
+    firstName: String!
+    lastName: String!
+    password: String!
+    "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+    username: String!
 }
 
 input DatetimeFilterLookup {
-  contains: DateTime
-  endsWith: DateTime
-  exact: DateTime
-  gt: DateTime
-  gte: DateTime
-  iContains: DateTime
-  iEndsWith: DateTime
-  iExact: DateTime
-  iRegex: String
-  iStartsWith: DateTime
-  inList: [DateTime!]
-  isNull: Boolean
-  lt: DateTime
-  lte: DateTime
-  range: [DateTime!]
-  regex: String
-  startsWith: DateTime
+    contains: DateTime
+    endsWith: DateTime
+    exact: DateTime
+    gt: DateTime
+    gte: DateTime
+    iContains: DateTime
+    iEndsWith: DateTime
+    iExact: DateTime
+    iRegex: String
+    iStartsWith: DateTime
+    inList: [DateTime!]
+    isNull: Boolean
+    lt: DateTime
+    lte: DateTime
+    range: [DateTime!]
+    regex: String
+    startsWith: DateTime
 }
 
 input DeleteUserInput {
-  password: String!
+    password: String!
 }
 
 input RejectFriendRequestInput {
-  requestId: ID!
+    requestId: ID!
 }
 
 input RemoveFriendsInput {
-  friendsId: [ID!]!
+    friendsId: [ID!]!
 }
 
 input SendFriendRequestInput {
-  userId: ID!
+    userId: ID!
 }
 
 input StrFilterLookup {
-  contains: String
-  endsWith: String
-  exact: String
-  gt: String
-  gte: String
-  iContains: String
-  iEndsWith: String
-  iExact: String
-  iRegex: String
-  iStartsWith: String
-  inList: [String!]
-  isNull: Boolean
-  lt: String
-  lte: String
-  range: [String!]
-  regex: String
-  startsWith: String
+    contains: String
+    endsWith: String
+    exact: String
+    gt: String
+    gte: String
+    iContains: String
+    iEndsWith: String
+    iExact: String
+    iRegex: String
+    iStartsWith: String
+    inList: [String!]
+    isNull: Boolean
+    lt: String
+    lte: String
+    range: [String!]
+    regex: String
+    startsWith: String
 }
 
 input UpdateUserInput {
-  firstName: String
-  lastName: String
+    firstName: String
+    lastName: String
 }
 
 input UserFilter {
-  email: StrFilterLookup
-  firstName: StrFilterLookup
-  "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-  isActive: Boolean
-  lastLogin: DatetimeFilterLookup
-  lastName: StrFilterLookup
-  "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-  username: StrFilterLookup
+    email: StrFilterLookup
+    firstName: StrFilterLookup
+    "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
+    isActive: Boolean
+    lastLogin: DatetimeFilterLookup
+    lastName: StrFilterLookup
+    "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+    username: StrFilterLookup
 }
