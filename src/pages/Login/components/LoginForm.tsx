@@ -2,12 +2,14 @@ import { Alert, Button, Form, Input } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { grey } from "@ant-design/colors";
 import styled from "styled-components";
-import { gql, useMutation } from "urql";
 import {
   LoginMutation,
   LoginMutationVariables,
 } from "../../../generated/graphql";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useRecoilRefresher_UNSTABLE } from "recoil";
+import { isLoggedInSelector } from "../../../state/recoil";
+import { gql, useMutation } from "@apollo/client";
 
 const LOGIN_USER = gql`
   mutation login($username: String!, $password: String!) {
@@ -29,25 +31,29 @@ interface ILoginFormData {
 
 const LoginForm = () => {
   const [showAlert, setShowAlert] = useState(false);
+  const refreshIsLoggedInState =
+    useRecoilRefresher_UNSTABLE(isLoggedInSelector);
 
-  const [loginResult, loginMutation] = useMutation<
+  const [loginMutation, { loading }] = useMutation<
     LoginMutation,
     LoginMutationVariables
-  >(LOGIN_USER);
-
-  const { data: mutationData, error: mutationError, fetching } = loginResult;
+  >(LOGIN_USER, {
+    onCompleted: (data) => {
+      if (data) {
+        localStorage.setItem("token", data.tokenAuth.token);
+        refreshIsLoggedInState();
+      }
+    },
+    onError: () => {
+      setShowAlert(true);
+    },
+  });
 
   const onSubmit = async (values: ILoginFormData) => {
-    await loginMutation({ ...values });
+    await loginMutation({
+      variables: { ...values },
+    });
   };
-
-  useEffect(() => {
-    if (mutationData) {
-      localStorage.setItem("token", mutationData.tokenAuth.token);
-    } else if (mutationError) {
-      setShowAlert(true);
-    }
-  }, [mutationData, mutationError]);
 
   return (
     <Form layout={"vertical"} onFinish={onSubmit}>
@@ -79,7 +85,7 @@ const LoginForm = () => {
       </Form.Item>
 
       <Form.Item>
-        <FullWidthButton type="primary" htmlType="submit" loading={fetching}>
+        <FullWidthButton type="primary" htmlType="submit" loading={loading}>
           Log in
         </FullWidthButton>
         <SubmitHelperAnchor href={""}>

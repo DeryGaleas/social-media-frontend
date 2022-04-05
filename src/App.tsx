@@ -8,17 +8,12 @@ import AuthRequired from "./router/AuthRequired";
 const App = () => (
   <AppCanvas>
     <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <AuthRequired>
-              <div>Dash</div>
-            </AuthRequired>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+      <AuthRequired>
+        <Routes>
+          <Route path="/" element={<div>Dash</div>} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </AuthRequired>
     </BrowserRouter>
   </AppCanvas>
 );

@@ -1,13 +1,7 @@
-import { gql, useQuery } from "urql";
 import React, { ReactElement, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { IsLoggedInQuery } from "../generated/graphql";
-
-const IS_LOGGED_IN = gql`
-  query isLoggedIn {
-    isLoggedIn
-  }
-`;
+import { useLocation, useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { isLoggedInSelector } from "../state/recoil";
 
 const AuthRequired = ({
   children,
@@ -15,16 +9,18 @@ const AuthRequired = ({
   children: ReactElement[] | ReactElement;
 }) => {
   const nav = useNavigate();
-
-  const [result] = useQuery<IsLoggedInQuery>({
-    query: IS_LOGGED_IN,
-  });
+  const location = useLocation();
+  const isLoggedIn = useRecoilValue(isLoggedInSelector);
 
   useEffect(() => {
-    if (!result.data?.isLoggedIn) {
+    if (isLoggedIn) {
+      if (location.pathname === "/login") {
+        nav("/", { replace: true });
+      }
+    } else {
       nav("/login", { replace: true });
     }
-  }, [result, nav]);
+  }, [isLoggedIn]);
 
   return <>{children}</>;
 };
