@@ -258,6 +258,11 @@ export type UserTypeFriendsArgs = {
   filters?: InputMaybe<UserFilter>;
 };
 
+export type All_MessagesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type All_MessagesSubscription = { __typename?: 'Subscription', myMessages: { __typename?: 'MessagesType', id: string, content: string, creationDate: any, received: boolean, seen: boolean, sender: { __typename?: 'UserType', id: string, username: string } } };
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];

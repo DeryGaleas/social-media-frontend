@@ -33,6 +33,7 @@ const LoginForm = () => {
   const [showAlert, setShowAlert] = useState(false);
   const refreshIsLoggedInState =
     useRecoilRefresher_UNSTABLE(isLoggedInSelector);
+  const [formData, setFormData] = useState({});
 
   const [loginMutation, { loading }] = useMutation<
     LoginMutation,
@@ -40,7 +41,10 @@ const LoginForm = () => {
   >(LOGIN_USER, {
     onCompleted: (data) => {
       if (data) {
+        console.log(data);
         localStorage.setItem("token", data.tokenAuth.token);
+        localStorage.setItem("user", JSON.stringify(formData));
+
         refreshIsLoggedInState();
       }
     },
@@ -50,6 +54,7 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (values: ILoginFormData) => {
+    setFormData(values);
     await loginMutation({
       variables: { ...values },
     });
